@@ -1,5 +1,4 @@
-import clientPromise from "@/lib/mongodb"; // default import
-import { findUserByEmail } from "@/models/User";
+import clientPromise from "@/lib/mongodb"
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
