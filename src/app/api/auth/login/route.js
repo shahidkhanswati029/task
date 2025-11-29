@@ -1,4 +1,4 @@
-import clientPromise from "@/lib/mongodb"
+import clientPromise from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -14,23 +14,25 @@ export async function POST(req) {
     const db = client.db();
 
     const user = await db.collection("users").findOne({ email });
-
-    console.log(user)
     if (!user) return new Response(JSON.stringify({ error: "Invalid email or password" }), { status: 401 });
-      
-      console.log(password, user.password, "user test")
-const isValid = await bcrypt.compare(password.trim(), user.password);
-console.log(isValid,"isvalid")
+
+    const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) return new Response(JSON.stringify({ error: "Invalid email or password" }), { status: 401 });
 
-    const token = jwt.sign({ id: user._id.toString(), email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign(
+      { id: user._id.toString(), email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
     return new Response(
-      JSON.stringify({ token, user: { id: user._id.toString(), name: user.name, email: user.email } }),
+      JSON.stringify({
+        token,
+        user: { id: user._id.toString(), name: user.name, email: user.email },
+      }),
       { status: 200 }
     );
   } catch (err) {
-    console.error(err);
     return new Response(JSON.stringify({ error: "Something went wrong" }), { status: 500 });
   }
 }
