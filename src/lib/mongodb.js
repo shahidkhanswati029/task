@@ -1,31 +1,20 @@
 import { MongoClient } from "mongodb";
 
-// Use environment variable for MongoDB connection string
 const uri = process.env.MONGODB_URI;
-if (!uri) {
-  throw new Error("Please add your Mongo URI to .env");
-}
+if (!uri) throw new Error("MONGODB_URI missing");
 
 let client;
 let clientPromise;
 
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
-
-// Development: reuse client across hot reloads
 if (process.env.NODE_ENV === "development") {
   if (!global._mongoClientPromise) {
-    client = new MongoClient(uri, options);
+    client = new MongoClient(uri); // no options needed in v5+
     global._mongoClientPromise = client.connect();
   }
   clientPromise = global._mongoClientPromise;
 } else {
-  // Production: create a new client for each instance
-  client = new MongoClient(uri, options);
+  client = new MongoClient(uri);
   clientPromise = client.connect();
 }
 
-// Export the promise to use in API routes
 export default clientPromise;
