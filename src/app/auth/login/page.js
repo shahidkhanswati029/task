@@ -26,7 +26,7 @@ export default function Login() {
     if (!res.ok) {
       toast.error(data.error || "Login failed");
     } else {
-      localStorage.setItem("token", data.token); // save JWT
+      // localStorage.setItem("token", data.token); // save JWT
       toast.success("Login successful!");
       router.push("/");
     }
