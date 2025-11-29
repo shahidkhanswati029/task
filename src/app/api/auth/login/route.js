@@ -1,3 +1,4 @@
+// app/api/auth/login/route.js
 import clientPromise from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -14,10 +15,16 @@ export async function POST(req) {
     const db = client.db();
 
     const user = await db.collection("users").findOne({ email });
-    if (!user) return new Response(JSON.stringify({ error: "Invalid email or password" }), { status: 401 });
+    if (!user)
+      return new Response(JSON.stringify({ error: "Invalid email or password" }), {
+        status: 401,
+      });
 
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) return new Response(JSON.stringify({ error: "Invalid email or password" }), { status: 401 });
+    if (!isValid)
+      return new Response(JSON.stringify({ error: "Invalid email or password" }), {
+        status: 401,
+      });
 
     const token = jwt.sign(
       { id: user._id.toString(), email: user.email },
@@ -33,6 +40,7 @@ export async function POST(req) {
       { status: 200 }
     );
   } catch (err) {
-    return new Response(JSON.stringify({ error: "Something went wrong" }), { status: 500 });
+    console.error("LOGIN ERROR:", err);
+    return new Response(JSON.stringify({ error: "Server Error" }), { status: 500 });
   }
 }

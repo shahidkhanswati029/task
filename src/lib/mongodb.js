@@ -8,7 +8,7 @@ let clientPromise;
 
 if (process.env.NODE_ENV === "development") {
   if (!global._mongoClientPromise) {
-    client = new MongoClient(uri); // no options needed in v5+
+    client = new MongoClient(uri); // v5+ driver, no extra options
     global._mongoClientPromise = client.connect();
   }
   clientPromise = global._mongoClientPromise;
